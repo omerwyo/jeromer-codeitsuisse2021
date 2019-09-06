@@ -13,7 +13,7 @@ def evaluate():
     inputValue = data.get("input");
     result = inputValue * inputValue
     logging.info("My result :{}".format(result))
-    return jsonify(result);
+    return json.dumps(result);
 
 
 
