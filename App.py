@@ -5,8 +5,7 @@ logger = logging.getLogger(__name__)
 
 @app.route('/', methods=['GET'])
 def default_route():
-    logging.info("log test")
-    return "Team XYZ page";
+    return "Python Template";
 
 
 logger = logging.getLogger()
