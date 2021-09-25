@@ -20,8 +20,6 @@ def with_requests(url, headers):
 
 
 def send_post(url, data):
-    logger.info("URL: {}".format(url))
-    logger.info("Data: {}".format(data))
     return requests.post(url=url, data=data)
 
 
@@ -121,14 +119,15 @@ def play(remote_addr, battle_id, board):
 
     for event in client.events():
         data = json.loads(event.data)
-        logging.info("Events running: {}".format(data))
+        logging.info("Data: {}".format(data))
 
         if(not valid_response):
             flip_table(battle_addr_play)
+            continue
 
         if('youAre' in data and player == "" and opponent == ""):
             player = data['youAre']
-            logging.info("Player id: {}".format(player))
+            logging.info("Player ID: {}".format(player))
             if player == "X":
                 opponent = "O"
                 continue
@@ -136,23 +135,24 @@ def play(remote_addr, battle_id, board):
                 opponent = "X"
 
         if("player" in data):
-            logging.info("Player: {}".format(data["player"]))
+            # logging.info("Player: {}".format(data["player"]))
             if(data["player"] == player):
                 continue
 
             if("action" in data):
-                logging.info("Action: {}".format(data["action"]))
+                # logging.info("Action: {}".format(data["action"]))
                 if(data["action"] != "putSymbol" and data["action"] != "(╯°□°)╯︵ ┻━┻"):
                     flip_table(battle_addr_play)
                     continue
 
-                logging.info("Position: {}".format(data["position"]))
-                logging.info("Opponent Move: {}".format(
-                    moves.index(data["position"])))
+                # logging.info("Position: {}".format(data["position"]))
+                # logging.info("Opponent Move: {}".format(
+                #     moves.index(data["position"])))
                 if(board[moves.index(data["position"])] == ""):
                     board[moves.index(data["position"])] = data["player"]
                 else:
                     flip_table(battle_addr_play)
+                    continue
 
         if("winner" in data):
             logger.info(data)
@@ -161,8 +161,8 @@ def play(remote_addr, battle_id, board):
         move = next_move(player, opponent, board)
         board[move] = player
         next_position = moves[move]
-        logging.info("Player Move: {}".format(move))
-        logging.info("Player Move Position: {}".format(next_position))
+        # logging.info("Player Move: {}".format(move))
+        # logging.info("Player Move Position: {}".format(next_position))
 
         response = send_post(battle_addr_play, {
             "action": "putSymbol",
