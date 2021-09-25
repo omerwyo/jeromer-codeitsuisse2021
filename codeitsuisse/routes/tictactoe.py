@@ -155,6 +155,8 @@ def play(remote_addr, battle_id, board):
                 #     moves.index(data["position"])))
                 if(board[moves.index(data["position"])] == ""):
                     board[moves.index(data["position"])] = data["player"]
+                    print(board)
+                    player_turn = not player_turn
                 else:
                     flip_table(battle_addr_play)
                     return ""
@@ -173,6 +175,5 @@ def play(remote_addr, battle_id, board):
             "action": "putSymbol",
             "position": next_position
         })
-        player_turn = not player_turn
 
         logging.info(response.text)
