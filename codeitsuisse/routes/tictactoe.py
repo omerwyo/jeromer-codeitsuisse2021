@@ -23,7 +23,7 @@ def tic_tac_toe():
     logging.info("BattleId {}".format(data))
     battle_id = data.get("battleId")
 
-    arena_endpoint = request.host_url + "/tic-tac-toe/"
+    arena_endpoint = request.host_url + "tic-tac-toe/"
 
     logging.info("Arena Endpoint :{}".format(arena_endpoint))
     play(arena_endpoint, battle_id=battle_id)
