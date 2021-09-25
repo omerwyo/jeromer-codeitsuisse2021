@@ -29,9 +29,11 @@ def tic_tac_toe():
 
 def play(remote_addr, battle_id):
     headers = {'Accept': 'text/event-stream'}
-    response = requests.get(remote_addr+"start/" +
-                            battle_id, stream=True)
+    battle_addr = remote_addr+"start/" + battle_id
+    logging.info("Arena Endpoint :{}".format(battle_addr))
+
+    response = requests.get(battle_addr, headers=headers, stream=True)
 
     client = SSEClient(response)
     for event in client.events():
-        logging.info(event.data)
+        logging.info(json.loads(event.data))
