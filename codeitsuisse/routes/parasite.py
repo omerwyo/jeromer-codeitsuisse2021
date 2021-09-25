@@ -33,7 +33,7 @@ def evaluateParasite():
         partialOutputDict['room'] = roomNum
         copyGrid = y = [row[:] for row in grid]
         print(copyGrid)
-        recurP2(copyGrid, infectedI, infectedJ)
+        recurP2(copyGrid, infectedI, infectedJ, 0)
 
         partialOutputDict['p1'] = evalParasiteP1(grid, interestedIndividuals, infectedI, infectedJ)
         partialOutputDict['p2'] = -300
@@ -72,7 +72,7 @@ def evalParasiteP1(grid, interestedIndividuals, infectedI, infectedJ):
     return returnDict
 
 
-def recurP2(grid, i, j, timer=0):
+def recurP2(grid, i, j, timer):
     grid_value = grid[i][j]
     if(grid_value == 0 or grid_value == 2 or grid_value == -1):
         return
@@ -82,9 +82,9 @@ def recurP2(grid, i, j, timer=0):
     grid[i][j] = -1
     if(i - 1 >= 0):
         recurP2(grid, i - 1, j, timer)
-    if(j + 1 < len(grid[i])):
+    if(j + 1 <= len(grid[i]) - 1):
         recurP2(grid, i, j + 1, timer)
-    if(i+1 < len(grid)):
+    if(i+1 <= len(grid) - 1):
         recurP2(grid, i+1, j, timer)
     if(j-1 >= 0):
         recurP2(grid, i, j-1, timer)
