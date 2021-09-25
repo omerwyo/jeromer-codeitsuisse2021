@@ -41,6 +41,7 @@ def play(remote_addr, battle_id):
     response = with_requests(battle_addr, headers)
     logging.info(response)
 
-    client = sseclient.SSEClient(response)
+    # client = sseclient.SSEClient(response)
+    client = sseclient.SSEClient(url=battle_addr, headers=headers)
     for event in client.events():
         logging.info(json.loads(event.data))
