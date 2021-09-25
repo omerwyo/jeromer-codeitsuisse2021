@@ -79,7 +79,7 @@ def next_move(player, opponent, board):
 @app.route('/tic-tac-toe', methods=['POST'])
 def tic_tac_toe():
     board = []
-    for i in range(9):
+    for _ in range(9):
         board.append('')
 
     data = request.get_json()
@@ -122,9 +122,9 @@ def play(remote_addr, battle_id, board):
         data = json.loads(event.data)
         logging.info("Data: {}".format(data))
 
-        if(not valid_response):
-            flip_table(battle_addr_play)
-            return ""
+        # if(not valid_response):
+        #     flip_table(battle_addr_play)
+        #     return ""
 
         if('youAre' in data and player == "" and opponent == ""):
             player = data['youAre']
@@ -137,8 +137,10 @@ def play(remote_addr, battle_id, board):
                 opponent = "X"
 
         if("player" in data):
-            # logging.info("Player: {}".format(data["player"]))
             if(data["player"] != player and player_turn):
+                flip_table(battle_addr_play)
+                return ""
+            elif(data["player"] == player and not player_turn):
                 flip_table(battle_addr_play)
                 return ""
 
