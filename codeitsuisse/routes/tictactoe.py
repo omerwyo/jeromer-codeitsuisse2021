@@ -89,7 +89,7 @@ def tic_tac_toe():
     arena_endpoint = "https://cis2021-arena.herokuapp.com/" + "tic-tac-toe/"
 
     logging.info("Arena Endpoint :{}".format(arena_endpoint))
-    play(arena_endpoint, battle_id, board)
+    return play(arena_endpoint, battle_id, board)
 
 
 def valid_response(data):
@@ -116,6 +116,7 @@ def play(remote_addr, battle_id, board):
 
     player = ""
     opponent = ""
+    player_turn = True
 
     for event in client.events():
         data = json.loads(event.data)
@@ -123,12 +124,13 @@ def play(remote_addr, battle_id, board):
 
         if(not valid_response):
             flip_table(battle_addr_play)
-            continue
+            return ""
 
         if('youAre' in data and player == "" and opponent == ""):
             player = data['youAre']
             logging.info("Player ID: {}".format(player))
             if player == "X":
+                player_turn = False
                 opponent = "O"
                 continue
             else:
@@ -136,14 +138,15 @@ def play(remote_addr, battle_id, board):
 
         if("player" in data):
             # logging.info("Player: {}".format(data["player"]))
-            if(data["player"] == player):
-                continue
+            if(data["player"] != player and player_turn):
+                flip_table(battle_addr_play)
+                return ""
 
             if("action" in data):
                 # logging.info("Action: {}".format(data["action"]))
                 if(data["action"] != "putSymbol" and data["action"] != "(╯°□°)╯︵ ┻━┻"):
                     flip_table(battle_addr_play)
-                    continue
+                    return ""
 
                 # logging.info("Position: {}".format(data["position"]))
                 # logging.info("Opponent Move: {}".format(
@@ -152,14 +155,14 @@ def play(remote_addr, battle_id, board):
                     board[moves.index(data["position"])] = data["player"]
                 else:
                     flip_table(battle_addr_play)
-                    continue
+                    return ""
 
         if("winner" in data):
             logger.info(data)
             return ""
 
         move = next_move(player, opponent, board)
-        board[move] = player
+        # board[move] = player
         next_position = moves[move]
         # logging.info("Player Move: {}".format(move))
         # logging.info("Player Move Position: {}".format(next_position))
@@ -168,5 +171,6 @@ def play(remote_addr, battle_id, board):
             "action": "putSymbol",
             "position": next_position
         })
+        player_turn = not player_turn
 
         logging.info(response.text)
