@@ -19,8 +19,8 @@ def with_requests(url, headers):
 
 
 def send_post(url, data):
-    requests.post(url=url, data=data, headers={
-                  "Content-Type": "application/json"})
+    return requests.post(url=url, data=data, headers={
+        "Content-Type": "application/json"})
 
 
 def winning_move(player, board):
@@ -110,6 +110,7 @@ def play(remote_addr, battle_id, board):
         data = json.loads(event.data)
         if('youAre' in data):
             player = data['youAre']
+            logging.info("Player id: {}".format(player))
             if player == "X":
                 opponent = "O"
                 continue
@@ -117,7 +118,7 @@ def play(remote_addr, battle_id, board):
                 opponent = "X"
 
         if("action" in data):
-            if(data["action"] != "putSymbol" or data["action" != "(╯°□°)╯︵ ┻━┻"]):
+            if(data["action"] != "putSymbol" or data["action"] != "(╯°□°)╯︵ ┻━┻"):
                 send_post(battle_addr_play, {"action": "(╯°□°)╯︵ ┻━┻"})
                 continue
             board[moves.index(data["position"])] = data["player"]
@@ -127,5 +128,8 @@ def play(remote_addr, battle_id, board):
 
         move = next_move(player, opponent, board)
         board[move] = player
-        send_post(battle_addr_play, {
+
+        response = send_post(battle_addr_play, {
             "action": "putSymbol", "position": moves[move]})
+
+        logging.info(response.json())
