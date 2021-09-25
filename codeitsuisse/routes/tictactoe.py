@@ -21,7 +21,7 @@ def tic_tac_toe():
     data = request.get_json()
     logging.info("BattleId {}".format(data))
     battle_id = data.get("battleId")
-    arena_endpoint = request.remote_addr + "/tic-tac-toe/play/" + battle_id
+    arena_endpoint = "http://" + request.remote_addr + "/tic-tac-toe/play/" + battle_id
 
     logging.info("Arena Endpoint :{}".format(arena_endpoint))
     play(arena_endpoint)
