@@ -121,6 +121,8 @@ def play(remote_addr, battle_id, board):
 
         if("player" in data):
             logging.info("Player: {}".format(data["player"]))
+            if(data["player"] == player):
+                continue
 
             if("action" in data):
                 logging.info("Action: {}".format(data["action"]))
