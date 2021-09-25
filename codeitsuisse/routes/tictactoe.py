@@ -30,7 +30,7 @@ def tic_tac_toe():
 def play(remote_addr, battle_id):
     headers = {'Accept': 'text/event-stream'}
     response = requests.get(remote_addr+"start/" +
-                            battle_id, stream=True, headers=headers)
+                            battle_id, stream=True)
 
     client = SSEClient(response)
     for event in client.events():
