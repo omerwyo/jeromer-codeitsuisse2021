@@ -32,8 +32,10 @@ def evaluateParasite():
         partialOutputDict = {}
         partialOutputDict['room'] = roomNum
         copyGrid = y = [row[:] for row in grid]
+        print(copyGrid)
         recurP2(copyGrid, infectedI, infectedJ)
 
+        partialOutputDict['p1'] = evalParasiteP1(grid, interestedIndividuals, infectedI, infectedJ)
         partialOutputDict['p2'] = -300
         for key in STORAGE_DICT.keys():
             if STORAGE_DICT[key] == 0:
@@ -42,7 +44,6 @@ def evaluateParasite():
             if STORAGE_DICT[key] > partialOutputDict['p2']:
                 partialOutputDict['p2'] = STORAGE_DICT[key]
                  
-        partialOutputDict['p1'] = evalParasiteP1(grid, interestedIndividuals, infectedI, infectedJ)
         partialOutputDict['p3'] = evalParasiteP3(grid, infectedI, infectedJ)
         partialOutputDict['p4'] = evalParasiteP4(grid, infectedI, infectedJ)
 
