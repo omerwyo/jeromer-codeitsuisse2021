@@ -147,4 +147,4 @@ def play(remote_addr, battle_id, board):
             "position": next_position
         })
 
-        logging.info(response)
+        logging.info(response.text)
