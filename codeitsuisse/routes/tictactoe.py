@@ -21,15 +21,16 @@ def tic_tac_toe():
     data = request.get_json()
     logging.info("BattleId {}".format(data))
     battle_id = data.get("battleId")
-    arena_endpoint = "http://" + request.remote_addr + "/tic-tac-toe/play/" + battle_id
+    arena_endpoint = "http://" + request.remote_addr + "/tic-tac-toe/"
 
     logging.info("Arena Endpoint :{}".format(arena_endpoint))
-    play(arena_endpoint)
+    play(arena_endpoint, battle_id=battle_id)
 
 
-def play(arena_endpoint):
+def play(remote_addr, battle_id):
     headers = {'Accept': 'text/event-stream'}
-    response = requests.get(arena_endpoint, stream=True, headers=headers)
+    response = requests.get(remote_addr+"start/" +
+                            battle_id, stream=True, headers=headers)
 
     client = SSEClient(response)
     for event in client.events():
