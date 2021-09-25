@@ -136,8 +136,8 @@ def play(remote_addr, battle_id, board):
         if("winner" in data):
             logger.info(data)
 
-        board[move] = player
         move = next_move(player, opponent, board)
+        board[move] = player
         next_position = moves[move]
         logging.info("Player Move: {}".format(move))
         logging.info("Player Move Position: {}".format(next_position))
