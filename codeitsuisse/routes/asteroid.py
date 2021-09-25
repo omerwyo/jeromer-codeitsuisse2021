@@ -13,7 +13,7 @@ def asteroid():
     logging.info("data sent for evaluation {}".format(data))
 
     outputList = []
-    for inputStr in data:
+    for inputStr in data["test_cases"]:
         outputList.append(
             { "input" : inputStr,
               "score" : asteroidCalculator(inputStr),
