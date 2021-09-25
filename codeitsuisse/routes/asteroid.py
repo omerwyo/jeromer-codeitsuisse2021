@@ -13,18 +13,17 @@ def asteroid():
     logging.info("data sent for evaluation {}".format(data))
 
     outputList = []
-    runningScore = 0
     for inputStr in data:
-        # resultObtained += asteroidCalculator(inputStr)
-        # outputList.append(resultObtained)
-        asteroidHandler(inputStr)
-
-
+        outputList.append(
+            { "input" : inputStr,
+              "score" : asteroidCalculator(inputStr),
+              "origin" : originFinder(inputStr)
+            }
+        )
     logging.info("My result :{}".format(outputList))
     return json.dumps(outputList)
 
-
-def asteroidHandler(inputStr):
+def originFinder(inputStr):
     chunkList = []
     runningChar = inputStr[0]
     runningStr = ''
@@ -36,9 +35,17 @@ def asteroidHandler(inputStr):
         runningStr += char
     chunkList.append(runningStr)
     print(chunkList)
-    
-    myStr = chunkList[(len(chunkList) // 2 + 1)]
-    print(myStr[len(myStr) / 2])
+    myStr = chunkList[(len(chunkList) // 2)]
+    origin = 0
+    for string in chunkList:
+        print(string)
+        if string != myStr:
+            origin += len(string)
+        else:
+            origin += len(myStr) // 2
+            break
+    print(myStr)
+    return origin
     
 def calcScore(index, inputStr):
     pass 
@@ -47,13 +54,12 @@ def asteroidCalculator(inputStr):
     ddict = {}
     for i in range(len(inputStr)):
         if inputStr[i] in ddict:
-            ddict[inputStr] = 1
-        else:
             ddict[inputStr[i]] = ddict[inputStr[i]] + 1
+        else:
+            ddict[inputStr[i]] = 1
     result = 0
     for key in ddict.keys():
         value = ddict[key]
-
         if value >= 10:
             multiplier = 2
         elif value >= 7:
@@ -62,4 +68,5 @@ def asteroidCalculator(inputStr):
             multiplier = 1
         result += multiplier * value
     print(int(result))
+    return int(result)
         
