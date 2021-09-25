@@ -96,18 +96,19 @@ def play(remote_addr, battle_id, board):
     headers = {'Accept': 'text/event-stream'}
     battle_addr_start = remote_addr + "start/" + battle_id
     battle_addr_play = remote_addr + "play/" + battle_id
-    logging.info("Arena Endpoint :{}".format(battle_addr_start))
+    logging.info("Arena Start :{}".format(battle_addr_start))
+    logging.info("Arena Play :{}".format(battle_addr_play))
 
     res = with_requests(battle_addr_start, headers)
-
     client = sseclient.SSEClient(res)
 
     player = ""
     opponent = ""
-    for event in client.events():
-        logging.info("Events running: {}".format(json.loads(event.data)))
 
+    for event in client.events():
         data = json.loads(event.data)
+        logging.info("Events running: {}".format(data))
+
         if('youAre' in data and player == "" and opponent == ""):
             player = data['youAre']
             logging.info("Player id: {}".format(player))
@@ -117,19 +118,29 @@ def play(remote_addr, battle_id, board):
             else:
                 opponent = "X"
 
-        if("action" in data):
-            if(data["action"] != "putSymbol" or data["action"] != "(╯°□°)╯︵ ┻━┻"):
-                send_post(battle_addr_play, {"action": "(╯°□°)╯︵ ┻━┻"})
-                continue
-            board[moves.index(data["position"])] = data["player"]
+        if("player" in data):
+            logging.info("Player: {}".format(data["player"]))
+
+            if("action" in data):
+                logging.info("Action: {}".format(data["action"]))
+                if(data["action"] != "putSymbol" or data["action"] != "(╯°□°)╯︵ ┻━┻"):
+                    logging.WARN("Invalid Action")
+                    send_post(battle_addr_play, {"action": "(╯°□°)╯︵ ┻━┻"})
+                    continue
+
+                logging.info("Position: {}".format(data["position"]))
+                logging.info("Opponent Move: {}".format(
+                    moves.index(data["position"])))
+                board[moves.index(data["position"])] = data["player"]
 
         if("winner" in data):
             logger.info(data)
 
         move = next_move(player, opponent, board)
+        logging.info("Player Move: {}".format(move))
         board[move] = player
 
         response = send_post(battle_addr_play, {
             "action": "putSymbol", "position": moves[move]})
 
-        logging.info(response.json())
+        logging.info(response)
