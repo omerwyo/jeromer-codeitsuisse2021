@@ -108,7 +108,7 @@ def play(remote_addr, battle_id, board):
         logging.info("Events running: {}".format(json.loads(event.data)))
 
         data = json.loads(event.data)
-        if('youAre' in data):
+        if('youAre' in data and player == "" and opponent == ""):
             player = data['youAre']
             logging.info("Player id: {}".format(player))
             if player == "X":
