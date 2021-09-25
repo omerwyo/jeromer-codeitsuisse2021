@@ -1,7 +1,7 @@
 import logging
 import json
 import requests
-from sseclient import SSEClient
+import sseclient
 from urllib.parse import urlparse
 
 from flask import request, jsonify
@@ -15,6 +15,10 @@ moves = ["NW", "N", "NE", "W", "C", "E", "SW", "S", "SE"]
 board = []
 for i in range(9):
     board.append('')
+
+
+def with_requests(url, headers):
+    return requests.get(url, stream=True, headers=headers)
 
 
 @app.route('/tic-tac-toe', methods=['POST'])
@@ -34,8 +38,9 @@ def play(remote_addr, battle_id):
     battle_addr = remote_addr + "start/" + battle_id
     logging.info("Arena Endpoint :{}".format(battle_addr))
 
-    response = requests.get(battle_addr, headers=headers, stream=True)
+    response = with_requests(battle_addr, headers)
+    logging.info(response)
 
-    client = SSEClient(response)
+    client = sseclient.SSEClient(response)
     for event in client.events():
         logging.info(json.loads(event.data))
