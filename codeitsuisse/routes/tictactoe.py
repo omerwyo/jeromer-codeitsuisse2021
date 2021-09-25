@@ -19,8 +19,9 @@ def with_requests(url, headers):
 
 
 def send_post(url, data):
-    return requests.post(url=url, data=data, headers={
-        "Content-Type": "application/json"})
+    logger.info("URL: {}".format(url))
+    logger.info("Data: {}".format(data))
+    return requests.post(url=url, data=data)
 
 
 def winning_move(player, board):
