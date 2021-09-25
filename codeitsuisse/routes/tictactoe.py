@@ -12,6 +12,7 @@ from codeitsuisse import app
 logger = logging.getLogger(__name__)
 
 moves = ["NW", "N", "NE", "W", "C", "E", "SW", "S", "SE"]
+ACCEPTABLE_KEYS = ["battleId", "action", "position", "youAre", "id", "winner"]
 
 
 def with_requests(url, headers):
@@ -93,6 +94,18 @@ def tic_tac_toe():
     play(arena_endpoint, battle_id, board)
 
 
+def valid_response(data):
+    for key in list(data.keys()):
+        if(key not in ACCEPTABLE_KEYS):
+            return False
+    return True
+
+
+def flip_table(battle_addr_play):
+    logging.warn("Invalid Action")
+    send_post(battle_addr_play, {"action": "(╯°□°)╯︵ ┻━┻"})
+
+
 def play(remote_addr, battle_id, board):
     headers = {'Accept': 'text/event-stream'}
     battle_addr_start = remote_addr + "start/" + battle_id
@@ -109,6 +122,9 @@ def play(remote_addr, battle_id, board):
     for event in client.events():
         data = json.loads(event.data)
         logging.info("Events running: {}".format(data))
+
+        if(not valid_response):
+            flip_table(battle_addr_play)
 
         if('youAre' in data and player == "" and opponent == ""):
             player = data['youAre']
@@ -127,17 +143,20 @@ def play(remote_addr, battle_id, board):
             if("action" in data):
                 logging.info("Action: {}".format(data["action"]))
                 if(data["action"] != "putSymbol" and data["action"] != "(╯°□°)╯︵ ┻━┻"):
-                    logging.warn("Invalid Action")
-                    send_post(battle_addr_play, {"action": "(╯°□°)╯︵ ┻━┻"})
+                    flip_table(battle_addr_play)
                     continue
 
                 logging.info("Position: {}".format(data["position"]))
                 logging.info("Opponent Move: {}".format(
                     moves.index(data["position"])))
-                board[moves.index(data["position"])] = data["player"]
+                if(board[moves.index(data["position"])] == ""):
+                    board[moves.index(data["position"])] = data["player"]
+                else:
+                    flip_table(battle_addr_play)
 
         if("winner" in data):
             logger.info(data)
+            return ""
 
         move = next_move(player, opponent, board)
         board[move] = player
