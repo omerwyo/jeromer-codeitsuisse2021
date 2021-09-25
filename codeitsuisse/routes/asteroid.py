@@ -11,7 +11,6 @@ logger = logging.getLogger(__name__)
 def asteroid():
     data = request.get_json()
     logging.info("data sent for evaluation {}".format(data))
-
     outputList = []
     for inputStr in data["test_cases"]:
         outputList.append(
@@ -34,17 +33,15 @@ def originFinder(inputStr):
             runningStr = ''
         runningStr += char
     chunkList.append(runningStr)
-    print(chunkList)
     myStr = chunkList[(len(chunkList) // 2)]
     origin = 0
     for string in chunkList:
-        print(string)
         if string != myStr:
             origin += len(string)
         else:
             origin += len(myStr) // 2
             break
-    print(myStr)
+    print('Origin' + str(origin))
     return origin
     
 def calcScore(index, inputStr):
