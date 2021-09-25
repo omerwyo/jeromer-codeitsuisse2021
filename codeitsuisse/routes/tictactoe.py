@@ -2,6 +2,7 @@ import logging
 import json
 import requests
 from sseclient import SSEClient
+from urllib.parse import urlparse
 
 from flask import request, jsonify
 
@@ -21,7 +22,8 @@ def tic_tac_toe():
     data = request.get_json()
     logging.info("BattleId {}".format(data))
     battle_id = data.get("battleId")
-    arena_endpoint = "http://" + request.remote_addr + "/tic-tac-toe/"
+
+    arena_endpoint = request.host_url + "/tic-tac-toe/"
 
     logging.info("Arena Endpoint :{}".format(arena_endpoint))
     play(arena_endpoint, battle_id=battle_id)
@@ -29,7 +31,7 @@ def tic_tac_toe():
 
 def play(remote_addr, battle_id):
     headers = {'Accept': 'text/event-stream'}
-    battle_addr = remote_addr+"start/" + battle_id
+    battle_addr = remote_addr + "start/" + battle_id
     logging.info("Arena Endpoint :{}".format(battle_addr))
 
     response = requests.get(battle_addr, headers=headers, stream=True)
