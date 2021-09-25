@@ -11,10 +11,8 @@ idna==2.6
 itsdangerous==0.24
 Jinja2==2.10
 Markdown==2.6.11
-MarkupSafe==1.0
 mccabe==0.6.1
 nose==1.3.7
-numpy==1.15.0
 pathlib==1.0.1
 pew==1.1.0
 pipenv==8.2.7
