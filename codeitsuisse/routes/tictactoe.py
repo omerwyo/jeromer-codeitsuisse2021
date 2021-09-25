@@ -123,8 +123,8 @@ def play(remote_addr, battle_id, board):
 
             if("action" in data):
                 logging.info("Action: {}".format(data["action"]))
-                if(data["action"] != "putSymbol" or data["action"] != "(╯°□°)╯︵ ┻━┻"):
-                    logging.WARN("Invalid Action")
+                if(data["action"] != "putSymbol" and data["action"] != "(╯°□°)╯︵ ┻━┻"):
+                    logging.warn("Invalid Action")
                     send_post(battle_addr_play, {"action": "(╯°□°)╯︵ ┻━┻"})
                     continue
 
@@ -136,11 +136,15 @@ def play(remote_addr, battle_id, board):
         if("winner" in data):
             logger.info(data)
 
-        move = next_move(player, opponent, board)
-        logging.info("Player Move: {}".format(move))
         board[move] = player
+        move = next_move(player, opponent, board)
+        next_position = moves[move]
+        logging.info("Player Move: {}".format(move))
+        logging.info("Player Move Position: {}".format(next_position))
 
         response = send_post(battle_addr_play, {
-            "action": "putSymbol", "position": moves[move]})
+            "action": "putSymbol",
+            "position": next_position
+        })
 
         logging.info(response)
