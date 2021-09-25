@@ -40,12 +40,13 @@ def play(remote_addr, battle_id):
     logging.info("Arena Endpoint :{}".format(battle_addr_start))
 
     response = with_requests(battle_addr_start, headers)
-    response_json = response.json()
+    # response_json = response.json()
+    response_json = response.text
     logging.info(response_json)
-    post_response = requests.post(battle_addr_play, data={
-        "player": response_json["youAre"], "id": battle_id})
-    response_json = post_response.json()
-    logging.info(response_json)
+    # post_response = requests.post(battle_addr_play, data={
+    #     "player": response_json["youAre"], "id": battle_id})
+    # response_json = post_response.json()
+    # logging.info(response_json)
 
     client = sseclient.SSEClient(response)
     for event in client.events():
